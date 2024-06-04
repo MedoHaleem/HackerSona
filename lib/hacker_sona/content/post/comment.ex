@@ -4,8 +4,8 @@ defmodule HackerSona.Content.Post.Comment do
 
   schema "comments" do
     field :body, :string
-    field :user_id, :id
-    field :post_id, :id
+    belongs_to :post, HackerSona.Content.Post
+    belongs_to :user, HackerSona.User
 
     timestamps(type: :utc_datetime)
   end
@@ -13,7 +13,8 @@ defmodule HackerSona.Content.Post.Comment do
   @doc false
   def changeset(comment, attrs) do
     comment
-    |> cast(attrs, [:body])
-    |> validate_required([:body])
+    |> cast(attrs, [:body, :post_id, :user_id])
+    |> validate_required([:body, :post_id, :user_id])
+    |> validate_length(:body, min: 10, max: 500)
   end
 end

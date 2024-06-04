@@ -5,7 +5,8 @@ defmodule HackerSona.Content.Post do
   schema "posts" do
     field :title, :string
     field :body, :string
-    field :user_id, :id
+    belongs_to :user, HackerSona.User
+    has_many :comments, HackerSona.Content.Post.Comment
 
     timestamps(type: :utc_datetime)
   end

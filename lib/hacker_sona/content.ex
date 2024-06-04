@@ -38,6 +38,22 @@ defmodule HackerSona.Content do
   def get_post!(id), do: Repo.get!(Post, id)
 
   @doc """
+  Gets a single post with comments.
+
+  ## Examples
+
+      iex> get_post_with_comments!(123)
+      %Post{comments: [%Comment{}, ...]}
+
+      iex> get_post_with_comments!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_post_with_comments!(id) do
+    Repo.get!(Post, id) |> Repo.preload(:comments)
+  end
+
+  @doc """
   Creates a post.
 
   ## Examples

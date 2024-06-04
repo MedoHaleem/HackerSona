@@ -12,6 +12,13 @@
   <:item title="Title"><%= @post.title %></:item>
   <:item title="Body"><%= @post.body %></:item>
 </.list>
+<pre>
+  <%= inspect @socket, pretty: true %>
+</pre>
+<.comments post={@post} comments={@streams.comments} />
+<div id="new_comment">
+  <.live_component module={CommentFormComponent} post_id={@post.id} current_user={@current_user} id={:new} />
+</div>
 
 <.back navigate={~p"/posts"}>Back to posts</.back>
 
