@@ -8,6 +8,24 @@ defmodule HackerSona.Content do
 
   alias HackerSona.Content.Post
 
+  @topic inspect(__MODULE__)
+
+  def subscribe(id) do
+    Phoenix.PubSub.subscribe(HackerSona.PubSub, "#{@topic}_#{id}")
+  end
+
+  def broadcast({:ok, comment}, tag) do
+    Phoenix.PubSub.broadcast(
+      HackerSona.PubSub,
+      "#{@topic}_#{comment.post_id}",
+      {tag, comment}
+    )
+
+    {:ok, comment}
+  end
+
+  def broadcast({:error, _changeset} = error, _tag, _id), do: error
+
   @doc """
   Returns the list of posts.
 
@@ -165,6 +183,7 @@ defmodule HackerSona.Content do
     %Comment{}
     |> Comment.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:comment_created)
   end
 
   @doc """

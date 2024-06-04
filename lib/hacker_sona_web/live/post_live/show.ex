@@ -6,6 +6,9 @@ defmodule HackerSonaWeb.PostLive.Show do
 
   @impl true
   def mount(%{"id" => post_id} = _params, _session, socket) do
+    if connected?(socket) do
+      Content.subscribe(post_id)
+    end
     {:ok,
      assign(socket,
        post_id: post_id
