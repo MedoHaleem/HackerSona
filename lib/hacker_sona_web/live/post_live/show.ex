@@ -16,7 +16,7 @@ defmodule HackerSonaWeb.PostLive.Show do
 
       {:ok, _} =
         Presence.track(self(), "#{@topic}:#{post_id}", current_user.id, %{
-          username: current_user.email |> String.split("@") |> hd()
+          username: username(current_user.email)
         })
     end
 
@@ -58,6 +58,7 @@ defmodule HackerSonaWeb.PostLive.Show do
           class="mb-4 bg-gray-100 p-4 rounded w-full"
         >
           <p class="text-sm text-gray-700"><%= comment.body %></p>
+          <p class="text-sm text-gray-500">Posted by: <%= username(comment.user.email) %></p>
         </div>
       </div>
     </div>
@@ -66,12 +67,18 @@ defmodule HackerSonaWeb.PostLive.Show do
 
   @impl true
   def handle_info({:comment_created, comment}, socket) do
-    {:noreply, stream_insert(socket, :comments, comment, at: 0)}
+    # add current_user into the comment
+    comment = Map.put(comment, :user, socket.assigns.current_user)
+    {:noreply, stream_insert(socket, :comments, comment, at: -1)}
   end
 
   def handle_info(%{event: "presence_diff", payload: diff}, socket) do
     socket = socket |> remove_presences(diff.leaves) |> add_presences(diff.joins)
     {:noreply, socket}
+  end
+
+  def handle_info({HackerSonaWeb.PostLive.FormComponent, {:saved, post}}, socket) do
+    {:noreply, assign(socket, post: post)}
   end
 
   def remove_presences(socket, leaves) do
@@ -83,6 +90,10 @@ defmodule HackerSonaWeb.PostLive.Show do
   def add_presences(socket, joins) do
     presences = Map.merge(socket.assigns.presences, simple_presence_map(joins))
     assign(socket, presences: presences)
+  end
+
+  defp username(email) do
+    email |> String.split("@") |> hd()
   end
 
   defp page_title(:show), do: "Show Post"

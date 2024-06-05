@@ -7,7 +7,6 @@ defmodule HackerSona.Content do
   alias HackerSona.Repo
 
   alias HackerSona.Content.Post
-
   @topic inspect(__MODULE__)
 
   def subscribe(id) do
@@ -23,9 +22,7 @@ defmodule HackerSona.Content do
 
     {:ok, comment}
   end
-
-  def broadcast({:error, _changeset} = error, _tag, _id), do: error
-
+  def broadcast({:error, _changeset} = error, _tag), do: error
   @doc """
   Returns the list of posts.
 
@@ -68,7 +65,8 @@ defmodule HackerSona.Content do
 
   """
   def get_post_with_comments!(id) do
-    Repo.get!(Post, id) |> Repo.preload(:comments)
+    # preload the comments association and with each comments preload the user
+    Post |> Repo.get!(id) |> Repo.preload(comments: [:user])
   end
 
   @doc """

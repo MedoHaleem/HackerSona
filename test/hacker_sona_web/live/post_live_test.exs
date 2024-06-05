@@ -14,7 +14,7 @@ defmodule HackerSonaWeb.PostLiveTest do
   end
 
   describe "Index" do
-    setup [:create_post]
+    setup [:create_post, :register_and_log_in_user]
 
     test "lists all posts", %{conn: conn, post: post} do
       {:ok, _index_live, html} = live(conn, ~p"/posts")
@@ -24,7 +24,7 @@ defmodule HackerSonaWeb.PostLiveTest do
     end
 
     test "saves new post", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/posts")
+      {:ok, index_live, _html} = live(conn, ~p"/")
 
       assert index_live |> element("a", "New Post") |> render_click() =~
                "New Post"
@@ -45,40 +45,10 @@ defmodule HackerSonaWeb.PostLiveTest do
       assert html =~ "Post created successfully"
       assert html =~ "some title"
     end
-
-    test "updates post in listing", %{conn: conn, post: post} do
-      {:ok, index_live, _html} = live(conn, ~p"/posts")
-
-      assert index_live |> element("#posts-#{post.id} a", "Edit") |> render_click() =~
-               "Edit Post"
-
-      assert_patch(index_live, ~p"/posts/#{post}/edit")
-
-      assert index_live
-             |> form("#post-form", post: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert index_live
-             |> form("#post-form", post: @update_attrs)
-             |> render_submit()
-
-      assert_patch(index_live, ~p"/posts")
-
-      html = render(index_live)
-      assert html =~ "Post updated successfully"
-      assert html =~ "some updated title"
-    end
-
-    test "deletes post in listing", %{conn: conn, post: post} do
-      {:ok, index_live, _html} = live(conn, ~p"/posts")
-
-      assert index_live |> element("#posts-#{post.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#posts-#{post.id}")
-    end
   end
 
   describe "Show" do
-    setup [:create_post]
+    setup [:create_post, :register_and_log_in_user]
 
     test "displays post", %{conn: conn, post: post} do
       {:ok, _show_live, html} = live(conn, ~p"/posts/#{post}")

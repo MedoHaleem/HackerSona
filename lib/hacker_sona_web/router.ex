@@ -19,6 +19,8 @@ defmodule HackerSonaWeb.Router do
 
   scope "/", HackerSonaWeb do
     pipe_through :browser
+    live "/", PostLive.Index, :index
+    live "/posts", PostLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
@@ -66,19 +68,10 @@ defmodule HackerSonaWeb.Router do
       on_mount: [{HackerSonaWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/", PostLive.Index, :index
-      live "/posts", PostLive.Index, :index
       live "/posts/new", PostLive.Index, :new
       live "/posts/:id/edit", PostLive.Index, :edit
       live "/posts/:id/show/edit", PostLive.Show, :edit
       live "/posts/:id", PostLive.Show, :show
-      live "/comments", CommentLive.Index, :index
-      live "/comments/new", CommentLive.Index, :new
-      live "/comments/:id/edit", CommentLive.Index, :edit
-
-      live "/comments/:id", CommentLive.Show, :show
-      live "/comments/:id/show/edit", CommentLive.Show, :edit
-
     end
   end
 

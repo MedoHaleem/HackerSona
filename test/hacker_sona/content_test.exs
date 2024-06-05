@@ -7,6 +7,7 @@ defmodule HackerSona.ContentTest do
     alias HackerSona.Content.Post
 
     import HackerSona.ContentFixtures
+    import HackerSona.AccountsFixtures
 
     @invalid_attrs %{title: nil, body: nil}
 
@@ -63,21 +64,24 @@ defmodule HackerSona.ContentTest do
     alias HackerSona.Content.Post.Comment
 
     import HackerSona.ContentFixtures
+    import HackerSona.AccountsFixtures
 
     @invalid_attrs %{body: nil}
 
     test "list_comments/0 returns all comments" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user()
       assert Content.list_comments() == [comment]
     end
 
     test "get_comment!/1 returns the comment with given id" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user()
       assert Content.get_comment!(comment.id) == comment
     end
 
     test "create_comment/1 with valid data creates a comment" do
-      valid_attrs = %{body: "some body"}
+      post = post_fixture()
+      user = user_fixture()
+      valid_attrs = %{body: "some body", post_id: post.id, user_id: user.id}
 
       assert {:ok, %Comment{} = comment} = Content.create_comment(valid_attrs)
       assert comment.body == "some body"
@@ -88,7 +92,7 @@ defmodule HackerSona.ContentTest do
     end
 
     test "update_comment/2 with valid data updates the comment" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user(%{body: "some body"})
       update_attrs = %{body: "some updated body"}
 
       assert {:ok, %Comment{} = comment} = Content.update_comment(comment, update_attrs)
@@ -96,20 +100,28 @@ defmodule HackerSona.ContentTest do
     end
 
     test "update_comment/2 with invalid data returns error changeset" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user()
       assert {:error, %Ecto.Changeset{}} = Content.update_comment(comment, @invalid_attrs)
       assert comment == Content.get_comment!(comment.id)
     end
 
     test "delete_comment/1 deletes the comment" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user()
       assert {:ok, %Comment{}} = Content.delete_comment(comment)
       assert_raise Ecto.NoResultsError, fn -> Content.get_comment!(comment.id) end
     end
 
     test "change_comment/1 returns a comment changeset" do
-      comment = comment_fixture()
+      comment = build_comment_with_post_and_user()
       assert %Ecto.Changeset{} = Content.change_comment(comment)
+    end
+
+    defp build_comment_with_post_and_user(attrs \\ %{}) do
+      post = post_fixture()
+      user = user_fixture()
+      # Merge attrs
+      attrs = Enum.into(attrs, %{post_id: post.id, user_id: user.id})
+      comment_fixture(attrs)
     end
   end
 end

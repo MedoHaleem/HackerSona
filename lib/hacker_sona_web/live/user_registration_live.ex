@@ -6,7 +6,7 @@ defmodule HackerSonaWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="mx-auto max-w-sm bg-white p-8 rounded-lg shadow-lg">
       <.header class="text-center">
         Register for an account
         <:subtitle>
