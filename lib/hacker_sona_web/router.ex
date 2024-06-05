@@ -19,8 +19,6 @@ defmodule HackerSonaWeb.Router do
 
   scope "/", HackerSonaWeb do
     pipe_through :browser
-
-    get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
@@ -68,6 +66,7 @@ defmodule HackerSonaWeb.Router do
       on_mount: [{HackerSonaWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/", PostLive.Index, :index
       live "/posts", PostLive.Index, :index
       live "/posts/new", PostLive.Index, :new
       live "/posts/:id/edit", PostLive.Index, :edit

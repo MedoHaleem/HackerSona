@@ -29,7 +29,6 @@ defmodule HackerSonaWeb.PostLive.Show do
      ), temporary_assigns: [post: %Content.Post{}]}
   end
 
-
   def simple_presence_map(presences) do
     Enum.into(presences, %{}, fn {user_id, %{metas: metas}} ->
       {user_id, hd(metas)}
@@ -50,11 +49,15 @@ defmodule HackerSonaWeb.PostLive.Show do
 
   def comments(assigns) do
     ~H"""
-    <div :if={@post.comments}>
-      <h2>Comments</h2>
+    <div :if={@post.comments} class="mt-8">
+      <h2 class="text-2xl font-bold mb-4">Comments</h2>
       <div id="comments" phx-update="stream">
-        <div :for={{comment_id, comment} <- @comments} id={comment_id}>
-          <p><%= comment.body %></p>
+        <div
+          :for={{comment_id, comment} <- @comments}
+          id={comment_id}
+          class="mb-4 bg-gray-100 p-4 rounded w-full"
+        >
+          <p class="text-sm text-gray-700"><%= comment.body %></p>
         </div>
       </div>
     </div>

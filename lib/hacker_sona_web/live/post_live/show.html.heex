@@ -7,11 +7,11 @@
     </.link>
   </:actions>
 </.header>
-<div id="presence">
-  <h2>Who's here?</h2>
+<div id="presence" class="absolute left-10 p-4 mt-2 bg-white rounded shadow">
+  <h2 class="font-bold text-lg mb-2">Who's here?</h2>
   <ul>
-    <li :for={{_user_id, meta} <- @presences}>
-      <span>
+    <li :for={{_user_id, meta} <- @presences} class="mb-1 border-b border-gray-200">
+      <span class="text-gray-700">
         <%= meta.username %>
       </span>
     </li>

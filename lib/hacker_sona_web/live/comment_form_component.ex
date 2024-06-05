@@ -18,12 +18,29 @@ defmodule HackerSonaWeb.CommentFormComponent do
     assign(socket, post_id: socket.assigns.post_id, current_user: current_user)
   end
 
+  @impl true
   def render(assigns) do
     ~H"""
-    <div>
-      <.form for={@form} phx-change="validate" phx-submit="save_comment" phx-target={@myself}>
-        <.input field={@form[:body]} placeholder="Write your Comment Here" phx-debounce="2000" />
-        <.button phx-disable-with="Saving...">Submit Comment</.button>
+    <div class="mt-4">
+      <.form
+        for={@form}
+        phx-change="validate"
+        phx-submit="save_comment"
+        phx-target={@myself}
+        class="flex flex-col space-y-4"
+      >
+        <.input
+          field={@form[:body]}
+          placeholder="Write your Comment Here"
+          phx-debounce="2000"
+          class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+        />
+        <.button
+          phx-disable-with="Saving..."
+          class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+        >
+          Submit Comment
+        </.button>
       </.form>
     </div>
     """
