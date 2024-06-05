@@ -52,6 +52,13 @@ defmodule HackerSona.Content do
   """
   def get_post!(id), do: Repo.get!(Post, id)
 
+  def get_latest_post do
+    Post
+    |> order_by(desc: :id)
+    |> limit(1)
+    |> Repo.one()
+  end
+
   @doc """
   Gets a single post with comments.
 

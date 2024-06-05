@@ -17,7 +17,8 @@ defmodule HackerSona.ContentFixtures do
       attrs
       |> Enum.into(%{
         body: "some body",
-        title: unique_post_title()
+        title: unique_post_title(),
+        user_id: attrs[:user_id]
       })
       |> HackerSona.Content.create_post()
 

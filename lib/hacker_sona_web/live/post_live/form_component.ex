@@ -69,6 +69,7 @@ defmodule HackerSonaWeb.PostLive.FormComponent do
   end
 
   defp save_post(socket, :new, post_params) do
+    post_params = Map.put(post_params, "user_id", socket.assigns.current_user.id |> to_string())
     case Content.create_post(post_params) do
       {:ok, post} ->
         notify_parent({:saved, post})

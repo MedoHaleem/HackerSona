@@ -12,17 +12,20 @@ defmodule HackerSona.ContentTest do
     @invalid_attrs %{title: nil, body: nil}
 
     test "list_posts/0 returns all posts" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       assert Content.list_posts() == [post]
     end
 
     test "get_post!/1 returns the post with given id" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       assert Content.get_post!(post.id) == post
     end
 
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{title: "some title", body: "some body"}
+      user = user_fixture()
+      valid_attrs = %{title: "some title", body: "some body", user_id: user.id}
 
       assert {:ok, %Post{} = post} = Content.create_post(valid_attrs)
       assert post.title == "some title"
@@ -34,7 +37,8 @@ defmodule HackerSona.ContentTest do
     end
 
     test "update_post/2 with valid data updates the post" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       update_attrs = %{title: "some updated title", body: "some updated body"}
 
       assert {:ok, %Post{} = post} = Content.update_post(post, update_attrs)
@@ -43,19 +47,22 @@ defmodule HackerSona.ContentTest do
     end
 
     test "update_post/2 with invalid data returns error changeset" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       assert {:error, %Ecto.Changeset{}} = Content.update_post(post, @invalid_attrs)
       assert post == Content.get_post!(post.id)
     end
 
     test "delete_post/1 deletes the post" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       assert {:ok, %Post{}} = Content.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Content.get_post!(post.id) end
     end
 
     test "change_post/1 returns a post changeset" do
-      post = post_fixture()
+      user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       assert %Ecto.Changeset{} = Content.change_post(post)
     end
   end
@@ -79,8 +86,8 @@ defmodule HackerSona.ContentTest do
     end
 
     test "create_comment/1 with valid data creates a comment" do
-      post = post_fixture()
       user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       valid_attrs = %{body: "some body", post_id: post.id, user_id: user.id}
 
       assert {:ok, %Comment{} = comment} = Content.create_comment(valid_attrs)
@@ -117,8 +124,8 @@ defmodule HackerSona.ContentTest do
     end
 
     defp build_comment_with_post_and_user(attrs \\ %{}) do
-      post = post_fixture()
       user = user_fixture()
+      post = post_fixture(%{user_id: user.id})
       # Merge attrs
       attrs = Enum.into(attrs, %{post_id: post.id, user_id: user.id})
       comment_fixture(attrs)

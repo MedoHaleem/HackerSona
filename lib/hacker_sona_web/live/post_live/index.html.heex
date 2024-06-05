@@ -1,7 +1,7 @@
 <.header>
   Listing Posts
   <:actions>
-    <.link patch={~p"/posts/new"}>
+    <.link :if={@current_user} patch={~p"/posts/new"}>
       <.button>New Post</.button>
     </.link>
   </:actions>
@@ -33,6 +33,7 @@
     title={@page_title}
     action={@live_action}
     post={@post}
+    current_user={@current_user}
     patch={~p"/posts"}
   />
 </.modal>

@@ -3,6 +3,7 @@ defmodule HackerSonaWeb.PostLive.Index do
 
   alias HackerSona.Content
   alias HackerSona.Content.Post
+  on_mount {HackerSonaWeb.UserAuth, :mount_current_user}
 
   @impl true
   def mount(_params, _session, socket) do
