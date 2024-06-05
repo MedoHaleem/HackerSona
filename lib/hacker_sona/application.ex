@@ -12,6 +12,7 @@ defmodule HackerSona.Application do
       HackerSona.Repo,
       {DNSCluster, query: Application.get_env(:hacker_sona, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: HackerSona.PubSub},
+      HackerSonaWeb.Presence,
       # Start the Finch HTTP client for sending emails
       {Finch, name: HackerSona.Finch},
       # Start a worker by calling: HackerSona.Worker.start_link(arg)
