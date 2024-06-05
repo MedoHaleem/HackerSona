@@ -48,6 +48,8 @@ defmodule HackerSonaWeb.PostLiveTest do
   end
 
   describe "Show" do
+    alias HackerSonaWeb.Presence
+    alias HackerSona.AccountsFixtures
     setup [:create_post, :register_and_log_in_user]
 
     test "displays post", %{conn: conn, post: post} do
@@ -78,6 +80,46 @@ defmodule HackerSonaWeb.PostLiveTest do
       html = render(show_live)
       assert html =~ "Post updated successfully"
       assert html =~ "some updated title"
+    end
+
+    test "Add new comment to the post", %{conn: conn, post: post} do
+      {:ok, show_live, _html} = live(conn, ~p"/posts/#{post}")
+
+      assert show_live
+             |> form("#comment-form", comment: %{body: "some comment"})
+             |> render_submit()
+
+      html = render(show_live)
+      assert html =~ "some comment"
+    end
+
+    test "broadcasts new comment", %{conn: conn, post: post} do
+      {:ok, show_live, _html} = live(conn, ~p"/posts/#{post}")
+
+      HackerSona.Content.subscribe(post.id)
+
+      show_live
+      |> form("#comment-form", comment: %{body: "some comment"})
+      |> render_submit()
+
+      assert_receive {tag,  %{body: "some comment"}}
+
+      assert tag == :comment_created
+    end
+
+    test "tracks user presence in a post", %{conn: conn, post: post} do
+      {:ok, show_live, _html} = live(conn, ~p"/posts/#{post}")
+
+      presences = Presence.list("post:#{post.id}")
+
+      # Current user should be present in the post
+      assert presences != %{}
+
+      # simulate user presence have left the post by closing the tab
+      GenServer.stop(show_live.pid())
+
+      # Current user should not be present in the post
+      assert Presence.list("post:#{post.id}") == %{}
     end
   end
 end

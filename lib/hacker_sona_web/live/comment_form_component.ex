@@ -25,6 +25,7 @@ defmodule HackerSonaWeb.CommentFormComponent do
       <.form
         for={@form}
         phx-change="validate"
+        id="comment-form"
         phx-submit="save_comment"
         phx-target={@myself}
         class="flex flex-col space-y-4"
@@ -70,8 +71,6 @@ defmodule HackerSonaWeb.CommentFormComponent do
   end
 
   defp merge_comment_params(comment_params, socket) do
-    IO.inspect(socket.assigns)
-
     Map.merge(comment_params, %{
       "user_id" => socket.assigns.current_user.id,
       "post_id" => socket.assigns.post_id
