@@ -14,6 +14,7 @@ defmodule HackerSona.Content do
   end
 
   def broadcast({:ok, comment}, tag) do
+    comment = Repo.preload(comment, :user)
     Phoenix.PubSub.broadcast(
       HackerSona.PubSub,
       "#{@topic}_#{comment.post_id}",

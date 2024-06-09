@@ -67,8 +67,6 @@ defmodule HackerSonaWeb.PostLive.Show do
 
   @impl true
   def handle_info({:comment_created, comment}, socket) do
-    # add current_user into the comment
-    comment = Map.put(comment, :user, socket.assigns.current_user)
     {:noreply, stream_insert(socket, :comments, comment, at: -1)}
   end
 

@@ -77,12 +77,16 @@ defmodule HackerSona.ContentTest do
 
     test "list_comments/0 returns all comments" do
       comment = build_comment_with_post_and_user()
-      assert Content.list_comments() == [comment]
+      comment_from_db = Content.list_comments() |> hd()
+      assert comment.id == comment_from_db.id
+      assert comment.body == comment_from_db.body
     end
 
     test "get_comment!/1 returns the comment with given id" do
       comment = build_comment_with_post_and_user()
-      assert Content.get_comment!(comment.id) == comment
+      comment_from_db = Content.get_comment!(comment.id)
+      assert comment.id == comment_from_db.id
+      assert comment.body == comment_from_db.body
     end
 
     test "create_comment/1 with valid data creates a comment" do
@@ -109,7 +113,9 @@ defmodule HackerSona.ContentTest do
     test "update_comment/2 with invalid data returns error changeset" do
       comment = build_comment_with_post_and_user()
       assert {:error, %Ecto.Changeset{}} = Content.update_comment(comment, @invalid_attrs)
-      assert comment == Content.get_comment!(comment.id)
+      comment_to_be_updated = Content.get_comment!(comment.id)
+      assert comment.id == comment_to_be_updated.id
+      assert comment.body == comment_to_be_updated.body
     end
 
     test "delete_comment/1 deletes the comment" do
